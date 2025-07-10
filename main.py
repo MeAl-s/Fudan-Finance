@@ -8,7 +8,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
 
 # Load API key from .env file
-config = dotenv_values(r"C:\Point Detection\.env")
+config = dotenv_values(r".env")
 api_key = config.get("OPENAI_API_KEY")
 if not api_key:
     raise EnvironmentError("OPENAI_API_KEY not found in .env")
