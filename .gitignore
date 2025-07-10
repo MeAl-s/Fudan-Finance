@@ -1,0 +1,5 @@
+# Python virtual environment
+.venv/
+
+# dotenv file with secrets
+.env
