@@ -135,7 +135,7 @@ def main():
         initial_sidebar_state="expanded"
     )
     
-    st.title("Big LOBSTER")
+    st.title("LOBSTER POLICE")
     st.caption("Leveraging GPT-4o to detect regulatory risks in peer-to-peer lending platforms")
     
     # Data upload section
