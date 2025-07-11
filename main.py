@@ -2,18 +2,12 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import os
-from dotenv import dotenv_values
 from datetime import datetime
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
 
-# Load API key from .env file
-config = dotenv_values(r".env")
-api_key = config.get("OPENAI_API_KEY")
-if not api_key:
-    raise EnvironmentError("OPENAI_API_KEY not found in .env")
+api_key = st.secrets["OPENAI_API_KEY"]
 os.environ["OPENAI_API_KEY"] = api_key
-
 # Initialize LangChain model
 llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
 
