@@ -90,17 +90,17 @@ def highlight_risks(row):
 
 # Dashboard visualization using Streamlit native charts
 def create_dashboard(df):
-    tab1, tab2, tab3 = st.tabs(["License Compliance", "Risk Exposure", "Borrower Analysis"])
+    tab1, tab2, tab3 = st.tabs(["License Compliance 许可证合规", "Risk Exposure 风险敞口", "Borrower Analysis 借款人分析"])
     
     with tab1:
-        st.subheader("Platform License Status")
+        st.subheader("Platform License Status 平台许可证状态")
         license_counts = df['platform_license'].apply(
-            lambda x: "Valid" if x.startswith('LIC') else "Invalid"
+            lambda x: "Valid 有效" if x.startswith('LIC') else "Invalid 无效"
         ).value_counts()
         st.bar_chart(license_counts)
         
     with tab2:
-        st.subheader("Platform Risk Exposure")
+        st.subheader("Platform Risk Exposure 平台风险敞口")
         # Calculate risk scores
         conditions = [
             (df['interest_rate'] > 24) & (df['credit_score'] < 650),
@@ -115,7 +115,7 @@ def create_dashboard(df):
         st.bar_chart(platform_risk)
         
     with tab3:
-        st.subheader("Credit Score vs Interest Rate")
+        st.subheader("Credit Score vs Interest Rate 信用评分 vs 利率")
         # Use Streamlit's native scatter chart
         chart_data = df[['credit_score', 'interest_rate', 'amount', 'repayment_status']].copy()
         chart_data['size'] = chart_data['amount'] / 10000  # Scale for bubble size
@@ -135,11 +135,11 @@ def main():
         initial_sidebar_state="expanded"
     )
     
-    st.title("LOBSTER POLICE")
-    st.caption("Leveraging GPT-4o to detect regulatory risks in peer-to-peer lending platforms")
+    st.title("LOBSTER POLICE 监管龙虾")
+    st.caption("Leveraging GPT-4o to detect regulatory risks in peer-to-peer lending platforms / 利用 GPT-4o 检测点对点借贷平台中的监管风险")
     
     # Data upload section
-    uploaded_file = st.file_uploader("Upload P2P Loan Data (CSV)", type="csv")
+    uploaded_file = st.file_uploader("Upload P2P Loan Data (CSV) 上传P2P贷款数据(CSV)", type="csv")
     df = generate_sample_data() if uploaded_file is None else pd.read_csv(uploaded_file)
     
     # Convert transaction_date to datetime for filtering
@@ -147,29 +147,29 @@ def main():
     
     # Sidebar filters
     with st.sidebar:
-        st.header("🔧 Risk Filters")
+        st.header("🔧 Risk Filters 风险过滤器")
         
         min_date = df['transaction_date'].min().date()
         max_date = df['transaction_date'].max().date()
-        date_range = st.date_input("Transaction Date Range", [min_date, max_date])
+        date_range = st.date_input("Transaction Date Range 交易日期范围", [min_date, max_date])
         
         min_amount, max_amount = st.slider(
-            "Loan Amount Range", 
+            "Loan Amount Range 贷款金额范围", 
             min_value=0, 
             max_value=int(df['amount'].max() * 1.1),
             value=(0, int(df['amount'].max()))
         )
         
         risk_options = {
-            "🚩 Unlicensed Platforms": "platform_license in ['NO-LICENSE', 'SUSPENDED']",
-            "⚠️ Capital Adequacy < 8%": "platform_capital_ratio < 8",
-            "🔻 Predatory Lending": "(interest_rate > 24) & (credit_score < 650)",
-            "👥 Related Party Loans": "related_party_flag == 'Yes'",
-            "📋 KYC Issues": "kyc_status != 'Verified'"
+            "🚩 Unlicensed Platforms 无证平台": "platform_license in ['NO-LICENSE', 'SUSPENDED']",
+            "⚠️ Capital Adequacy < 8% 资本充足率<8%": "platform_capital_ratio < 8",
+            "🔻 Predatory Lending 掠夺性贷款": "(interest_rate > 24) & (credit_score < 650)",
+            "👥 Related Party Loans 关联方贷款": "related_party_flag == 'Yes'",
+            "📋 KYC Issues KYC问题": "kyc_status != 'Verified'"
         }
         
         selected_risks = st.multiselect(
-            "Risk Categories", 
+            "Risk Categories 风险类别", 
             options=list(risk_options.keys()),
             default=list(risk_options.keys())
         )
@@ -195,27 +195,27 @@ def main():
         filtered_df = filtered_df.query(risk_query)
     
     # Display data
-    st.subheader("📊 Loan Portfolio Overview")
+    st.subheader("📊 Loan Portfolio Overview 贷款组合概览")
     st.dataframe(filtered_df.style.apply(highlight_risks, axis=1), height=400)
     
     # Dashboard
-    st.subheader("📈 Risk Dashboard")
+    st.subheader("📈 Risk Dashboard 风险仪表板")
     create_dashboard(filtered_df)
     
     # LLM analysis section
-    st.subheader("🤖 Deep Regulatory Scan")
-    if st.button("Run AI Compliance Audit", type="primary"):
-        with st.spinner("🔍 Scanning for regulatory violations..."):
+    st.subheader("🤖 Deep Regulatory Scan 深度监管扫描")
+    if st.button("Run AI Compliance Audit 运行AI合规审计", type="primary"):
+        with st.spinner("🔍 Scanning for regulatory violations... 正在扫描违规行为..."):
             analysis_result = analyze_with_llm(filtered_df)
-            st.success("Compliance audit completed!")
+            st.success("Compliance audit completed! 合规审计完成！")
             
             # Display LLM results
-            st.markdown("### AI Compliance Findings")
+            st.markdown("### AI Compliance Findings AI合规发现")
             st.markdown(analysis_result, unsafe_allow_html=True)
             
             # Download findings
             st.download_button(
-                label="📥 Download Audit Report",
+                label="📥 Download Audit Report 下载审计报告",
                 data=analysis_result,
                 file_name=f"compliance_audit_{datetime.now().strftime('%Y%m%d')}.md",
                 mime="text/markdown"
